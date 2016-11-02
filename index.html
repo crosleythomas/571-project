@@ -25,16 +25,63 @@
 <p>This is the project website for Thomas Crosley and Karanbir Singh's UW CSE 571 class project.</p>
 
 <h3>
+<a id="project" class="anchor" href="#project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Summary</h3>
+<p>
+We are working on action-conditional video prediction as described in the 2015 paper by Oh, et al. <a href='https://arxiv.org/pdf/1507.08750v2.pdf'>Action-Conditional Video Prediction using Deep Networks in Atari Games</a>.  The goal for the project is to implement the baseline algorithm on simple datasets and then scale up the complexity of the data and make adjustments to the algorithm accordingly.
+</p>
+
+<h2>
 <a id="milestones" class="anchor" href="#milestones" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Milestones</h3>
+<p>
+Below, we have set goals for the project so we can track progress through the end of the quarter.
+</p>
 
 <h3>
-<a id="update-1" class="anchor" href="#update-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 1</h3>
+<a id="milestone-1" class="anchor" href="#milestone-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Milestone 1</h3>
+<ul>
+<li>
+Collect video datasets that include frame transitions that are stochastic given only the previous frame but deterministic given the frame and the action taken by the agent.
+</li>
+<li>
+Set up development tools for training deep neural networks.  We will be using the <a href='https://github.com/fchollet/keras'Keras</a> framework with <a href='https://www.tensorflow.org/'>Tensorflow</a> as a back-end for development of the neural networks.
+</li>
+<li>
+Implement the feed-forward version of the algorith described in the paper in Keras.
+</li>
+<li>
+Train the network on any basic datasets we have acquired
+</li>
+</ul>
 
 <h3>
-<a id="update-2" class="anchor" href="#update-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 2</h3>
+<a id="milestone-2" class="anchor" href="#milestone-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Milestone 2</h3>
+<ul>
+<li>
+Create a new dataset where the camera moves with the agent but is still a top-down view; the agent will be in the same place every time but the environment landmarks will move.
+</li>
+<li>
+Concatenate the predictions as the agent moves to make a psuedo-map of the environment.
+</li>
+<li>
+Adjust the architecture of the network/algorithm to address issues that arise for this new dataset and task.
+</li>
+</ul>
 
 <h3>
-<a id="update-3" class="anchor" href="#update-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 3</h3>
+<a id="milestone-3" class="anchor" href="#milestone-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Milestone 3</h3>
+<ul>
+<li>
+Create even more complex datasets including those with noisy motion models, noisy observations models, and videos that are stochastic conditioned on both the previous frame(s) and action.
+</li>
+</ul>
+
+<h3>
+<a id="milestone-4" class="anchor" href="#milestone-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Milestone 4</h3>
+<ul>
+<li>
+Try adding to the architecture to address problems that arose with the more complex datasets.  For example, try stochastic networks, sampling predictions, recurrent networks, etc as time allows.
+</li>
+</ul>
 
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
