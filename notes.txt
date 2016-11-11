@@ -1,0 +1,20 @@
+
+
+# Feed-forward network
+#	Input: m * h * w * c -- frames * height * width * channels
+		Concatenated number of frames back 
+
+# Multiple convolutional layers (with non-linearity)
+# Fully Connected layer (with non-linearity)
+
+# Multiplicative layer between output of fully connected layer (h_t^{encoded}) and the action (a_t)
+	# This is where action and encoded feature vector branches meet
+	# W^{enc} * h^{end} in one branch
+	# W^{a} * a in the other branch
+	# W^{dec} * (Point-wise product of the two)
+	# Gives us h_t^{dec}
+
+# Reshape h^{dec} to for ma 3D feature map
+
+# Multiple deconvolution layers (with non-linearity)
+# Final deconvolution layer (without non-linearity)
