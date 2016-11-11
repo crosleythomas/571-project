@@ -1,0 +1,17 @@
+Original Paper Website
+https://keras.io/layers/core/#dense
+
+Tensorflow Docs
+https://www.tensorflow.org/
+
+Keras Docs
+https://keras.io/
+
+Important concepts to know and understand how to use in Keras:
+	- Sequential Model (https://keras.io/getting-started/sequential-model-guide/)
+	- Specifying inputs (https://keras.io/getting-started/sequential-model-guide/#specifying-the-input-shape)
+	- Merging sequential models (https://keras.io/getting-started/functional-api-guide/#multi-input-and-multi-output-models) and (https://keras.io/getting-started/sequential-model-guide/#the-merge-layer)
+	- Convolution2D (https://keras.io/layers/convolutional/#convolution2d)
+	- Dense (https://keras.io/layers/core/#dense)
+	- Compiling a model (https://keras.io/getting-started/sequential-model-guide/#compilation)
+	- Training a model (https://keras.io/getting-started/sequential-model-guide/#training)

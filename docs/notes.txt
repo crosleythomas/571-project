@@ -1,4 +1,4 @@
-
+Basic outline of the feed-forward architecture from the ACVP paper
 
 # Feed-forward network
 #	Input: m * h * w * c -- frames * height * width * channels

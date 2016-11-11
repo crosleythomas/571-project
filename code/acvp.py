@@ -9,9 +9,9 @@
 from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D, Dense, Merge
 
-#################
-### Load data ###
-#################
+###############################
+###        Load data        ###
+###############################
 
 # Load frame data as numpy arrays
 #	Input has to be arranged such that, even if the input for a single training
@@ -75,7 +75,7 @@ fmodel.add(Dense(hidden_size, init='glorot_uniform'))
 amodel.add(Dense(hidden_size, init='glorot_uniform'))
 
 # Point-wise multiplicative combination
-encoded = Merge([fmodel, amodel], mode='dot')
+encoded = Merge([fmodel, amodel], mode='mul')
 
 #############################
 ### Step 3: Deconvolution ###
