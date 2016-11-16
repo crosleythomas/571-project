@@ -7,7 +7,7 @@
 ####################################################################
 
 from keras.models import Sequential
-from keras.layers import Convolution2D, MaxPooling2D, Dense, Merge, Flatten, Deconvolution2D
+from keras.layers import Convolution2D, MaxPooling2D, Dense, Merge, Flatten, Deconvolution2D, Reshape
 import scipy.io as sio
 import numpy as np
 
@@ -92,6 +92,10 @@ encoded = Merge([fmodel, amodel], mode='mul')
 # Deconvolutional Branch takes the merge branches as input
 dbranch = Sequential()
 dbranch.add(encoded)
+
+#dbranch.add(Dense(64))
+#dbranch.add(Dense(64, init='glorot_uniform', activation='relu'))
+#dbranch.add(Reshape((1,8,8)))
 
 # Add deconvolutional layer(s)
 # can't figure out how to do this size-wise
