@@ -59,8 +59,9 @@ Artifact: Datasets that are deterministic given an action.  An implementation of
 <ul>
   <li>Our presentation is <a href="https://docs.google.com/presentation/d/1xfsEDvupzKLWcwzpQGDVae32iMeAl6tH6CXc_clFiK8/edit?usp=sharing">here.</a></li>
   <li>We generate a Pacman-style dataset, where the next frame is random given the current frame, but deterministic given a [left, right, up, down, stay] action.</li>
-  <li>We train two feed-forward networks - one with actions and one with just the frames.</li>
-  <li>We evaluate our model and calculate mean-squared loss. We also generate visualizations of predicted vs. true frames.</li>
+  <li>We train two feed-forward networks - one with actions and one without.</li>
+  <li>We evaluate our model and calculate mean-squared loss.</li>
+  <li>We write visualization code for predicted vs. true frames.</li>
 </ul>
 </li>
 </ul>
