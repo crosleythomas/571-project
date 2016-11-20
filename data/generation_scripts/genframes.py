@@ -4,7 +4,8 @@ import random
 from tempfile import TemporaryFile
 
 create_mat_file = 0
-create_npz_file = 1
+create_npz_file = 0
+add_dots = 1
 
 # This file generates a file 'video.mat' with two values:
 #	'alist' -> the image matrix, shaped (num_frames, width, height)
@@ -14,14 +15,25 @@ create_npz_file = 1
 random.seed(10)
 	
 sprite = sio.loadmat('../8x8_sprite.mat')['sprite']
+
 sprite_width = sprite.shape[0]
 sprite_height = sprite.shape[1]
 
 field_size = 1
 num_channels = 1
-side_length = sprite_width * (field_size * 2 + 1)
+num_rows = (field_size * 2 + 1)
+side_length = sprite_width * num_rows
 num_frames = 10000
 frames = np.zeros((num_frames, num_channels, side_length, side_length), dtype=np.float64)
+
+if add_dots:
+	dots_sprite = np.zeros((sprite_height, sprite_width), dtype=np.float64)
+	center = (sprite_height / 2) - 1
+	dots_sprite[center:center + 2, center:center + 2] = 0.5
+	for i in range(0, side_length, sprite_height):
+		for j in range(0, side_length, sprite_height):
+			frames[0, :, i:i+sprite_height, j:j+sprite_width] = dots_sprite
+
 
 # initially in center
 x = sprite_width * field_size
