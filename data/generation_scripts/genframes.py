@@ -3,7 +3,7 @@ import numpy as np
 import random
 from tempfile import TemporaryFile
 
-create_mat_file = 0
+create_mat_file = 1
 create_npz_file = 0
 add_dots = 1
 
@@ -19,7 +19,7 @@ sprite = sio.loadmat('../8x8_sprite.mat')['sprite']
 sprite_width = sprite.shape[0]
 sprite_height = sprite.shape[1]
 
-field_size = 1
+field_size = 2
 num_channels = 1
 num_rows = (field_size * 2 + 1)
 side_length = sprite_width * num_rows
@@ -60,17 +60,26 @@ for i in range(1, num_frames):
 		y += sprite_height
 	elif choice == 'r':
 		x += sprite_width
+
+	# copy over old frame
+	frames[i, :, :, :] = frames[i - 1, :, :, :]
+
+	# clear out where sprite used to be
+	frames[i, :, old_y:old_y+sprite_height, old_x:old_x+sprite_width] = 0
+
 	if x >= 0 and x < side_length and y >= 0 and y < side_length:
 		old_y = y
 		old_x = x
 	else:
 		x = old_x
 		y = old_y
-	frames[i, :, y:y+sprite_height, x:x+sprite_width] = sprite	
+
+	# move sprite to new position
+	frames[i, :, y:y+sprite_height, x:x+sprite_width] = sprite
 	actions.append(action_indices[choice])
 
 if create_mat_file:
-	sio.savemat("../sprites/sprites_baseline_data.mat", {'frames' : frames, 'actions' : actions })
+	sio.savemat("../sprites/sprites_baseline_data_dots.mat", {'frames' : frames, 'actions' : actions })
 
 if create_npz_file:
 	np.savez('../sprites/sprites_baseline_data.npz', frames=frames, actions=actions)
