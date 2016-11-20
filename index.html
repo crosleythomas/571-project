@@ -2,7 +2,7 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>571-project by crosleythomas</title>
+    <title>571 project | Crosley, Singh</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -11,7 +11,7 @@
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">571-project</h1>
+      <h1 class="project-name">Action-Conditional Video Prediction</h1>
       <h2 class="project-tagline"></h2>
       <a href="https://github.com/crosleythomas/571-project" class="btn">View on GitHub</a>
       <a href="https://github.com/crosleythomas/571-project/zipball/master" class="btn">Download .zip</a>
@@ -22,12 +22,12 @@
       <h3>
 <a id="welcome" class="anchor" href="#welcome" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome.</h3>
 
-<p>This is the project website for Thomas Crosley and Karanbir Singh's UW CSE 571 class project.  On this page we will share updates on our progress and to view our open-source code you can visit the <a href='https://github.com/crosleythomas/571-project'>repo here</a>.</p>
+<p>This is the project website for Thomas Crosley and Karanbir Singh's UW CSE 571 class project.  On this page we will share updates on our progress. To view our open-source code you can visit the <a href='https://github.com/crosleythomas/571-project'>repo here</a>.</p>
 
 <h3>
 <a id="project" class="anchor" href="#project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Summary</h3>
 <p>
-We are working on action-conditional video prediction as described in the 2015 paper by Oh, et al. <a href='https://arxiv.org/pdf/1507.08750v2.pdf'>Action-Conditional Video Prediction using Deep Networks in Atari Games</a>.  The goal for the project is to implement the baseline algorithm on simple datasets and then scale up the complexity of the data and make adjustments to the algorithm accordingly.
+We are working on action-conditional video prediction as described in the 2015 paper by Oh, et al. <a href='https://arxiv.org/pdf/1507.08750v2.pdf'>Action-Conditional Video Prediction using Deep Networks in Atari Games</a>.  The goal for the project is to implement the baseline algorithm on simple datasets, and then scale up the complexity of the data and make adjustments to the algorithm accordingly.
 </p>
 
 <h2>
@@ -46,15 +46,25 @@ Collect video datasets that include frame transitions that are stochastic given 
 Set up development tools for training deep neural networks.  We will be using the <a href='https://github.com/fchollet/keras'Keras</a> framework with <a href='https://www.tensorflow.org/'>Tensorflow</a> as a back-end for development of the neural networks.
 </li>
 <li>
-Implement the feed-forward version of the algorith described in the paper in Keras.
+Implement the feed-forward version of the algorithm described in the paper in Keras.
 </li>
 <li>
-Train the network on any basic datasets we have acquired
+Train the network on any basic datasets we have acquired.
 </li>
 <li>
-<b>Artifact: Datasets that are deterministic given an action.  An implementation of the feed-forward system described in the paper that runs on basic datasets including a stochastic pacman.</b>
+Artifact: Datasets that are deterministic given an action.  An implementation of the feed-forward system described in the paper that runs on basic datasets.
+</li>
+<li>
+<b>Results:</b>
+<ul>
+  <li>Our presentation is <a href="https://docs.google.com/presentation/d/1xfsEDvupzKLWcwzpQGDVae32iMeAl6tH6CXc_clFiK8/edit?usp=sharing">here.</a></li>
+  <li>We generate a Pacman-style dataset, where the next frame is random given the current frame, but deterministic given a [left, right, up, down, stay] action.</li>
+  <li>We train two feed-forward networks - one with actions and one with just the frames.</li>
+  <li>We evaluate our model and calculate mean-squared loss. We also generate visualizations of predicted vs. true frames.</li>
+</ul>
 </li>
 </ul>
+
 
 <h3>
 <a id="milestone-2" class="anchor" href="#milestone-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Milestone 2 (November 28th)</h3>
