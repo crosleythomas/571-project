@@ -9,8 +9,8 @@ import random
 #	'labels' -> the labels, shaped (num_samples, width, height)
 # in this case, len(actions) = len(actions)
 
-create_mat_file = 1
-create_npz_file = 0
+create_mat_file = 0
+create_npz_file = 1
 
 baseline_file = '../sprites/sprites_baseline_data.npz'
 output_file = '../sprites/sprites_training'

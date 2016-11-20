@@ -3,8 +3,8 @@ import numpy as np
 import random
 from tempfile import TemporaryFile
 
-create_mat_file = 1
-create_npz_file = 0
+create_mat_file = 0
+create_npz_file = 1
 
 # This file generates a file 'video.mat' with two values:
 #	'alist' -> the image matrix, shaped (num_frames, width, height)
@@ -36,7 +36,7 @@ old_x = x
 
 # Say first frame is initialized with no move to keep tensor sizes the same
 # for frames and actions
-actions = ['n']
+actions = []
 
 for i in range(1, num_frames):
 	choice = random.choice(possible_actions)

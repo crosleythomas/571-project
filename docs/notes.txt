@@ -18,3 +18,6 @@ Basic outline of the feed-forward architecture from the ACVP paper
 
 # Multiple deconvolution layers (with non-linearity)
 # Final deconvolution layer (without non-linearity)
+
+# Tutorial on custom activation function
+https://www.youtube.com/watch?v=56EuHj2V8K8
