@@ -1,3 +1,4 @@
-data/
-!data/generation_scripts
+data/trained_models
+data/sprites
+data/8x8_sprite.mat
 
