@@ -9,7 +9,7 @@
 
 # Keras Imports
 from keras.models import Sequential
-from keras.layers import Convolution2D, MaxPooling2D, Dense, Merge, Reshape, Flatten, Deconvolution2D, Input
+from keras.layers import Convolution2D, MaxPooling2D, Dense, Merge, Reshape, Flatten, Deconvolution2D, Input, LSTM
 
 # Other Imports
 import scipy.io as sio
@@ -23,16 +23,6 @@ import time, datetime
 action_conditional = 0
 recurrent = 0
 display_network_sizes = 1
-
-# Save the trained model to a file
-ts = time.time()
-training_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-
-ac_str = 'nac'
-if action_conditional:
-	ac_str = 'ac'
-
-model_output_file = '../data/trained_models/sprites_' + ac_str + '_' + training_timestamp
 
 ###############################
 ###        Load data        ###
@@ -49,6 +39,21 @@ data_file = '../data/sprites/sprites_training.npz'
 data = np.load(data_file)
 input_frames = data['frames']
 labels = data['labels']
+
+# Save the trained model to a file
+ts = time.time()
+training_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
+
+arch_str = 'ff'
+if recurrent:
+	arch_str = 'rec'
+
+ac_str = 'nac'
+if action_conditional:
+	ac_str = 'ac'
+
+data_name = data_file.split('/')[-1].split('.')[0]
+model_output_file = '../data/trained_models/' + data_name + '_' + ac_str + '_' + arch_str + '_' + training_timestamp
 
 # Load action data
 #	There are N timesteps, t = 0 is the initial step, t = i is the system at time i
@@ -112,7 +117,7 @@ if not recurrent:
 	# Add fully-connected layer(s) WITH non-linearity
 	fmodel.add(Dense(dense_output_sizes[0], activation='relu'))
 else:
-	fmodel.add(LSTM())
+	fmodel.add(LSTM(dense_output_sizes[0]))
 
 # Add fully-connected layer(s) WITHOUT non-linearity
 fmodel.add(Dense(dense_output_sizes[1], init='glorot_uniform'))
@@ -129,7 +134,8 @@ if action_conditional:
 
 	# Point-wise multiplicative combination
 	encoded = Merge([fmodel, amodel], mode='mul')
-	dmodel = Sequential(encoded)
+	dmodel = Sequential()
+	dmodel.add(encoded)
 	model_training_input = [input_frames, actions]
 else:
 	# Input to deconvolutional branch is just the encoded state vector

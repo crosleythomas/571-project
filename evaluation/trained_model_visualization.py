@@ -13,12 +13,15 @@ import matplotlib.image as mpimg
 
 from PIL import Image
 
-action_conditional = 0
-
 SCALE_FACTOR = 255.0
 
-#model_file = '../data/trained_models/sprites_2016-11-20_09:53:23.h5' # action-conditional 
-model_file = '../data/trained_models/sprites_2016-11-20_10:15:01.h5'
+# nac
+#model_file = '../data/trained_models/sprites_training_nac_ff_2016-11-20_19:57:03.h5'
+#action_conditional = 0
+# ac
+model_file = '../data/trained_models/sprites_training_ac_ff_2016-11-20_19:19:59.h5'
+action_conditional = 1
+
 model = load_model(model_file)
 
 data_file = '../data/sprites/sprites_training.npz'
@@ -60,6 +63,7 @@ for i in range(0, display_iters):
 		prediction_input = [frame_input, action_input]
 	else:
 		prediction_input = [frame_input]
+		
 	predicted_frame = model.predict(prediction_input)
 	predicted_frame = np.reshape(predicted_frame, [frame_height, frame_width])
 	predicted_frame = predicted_frame * SCALE_FACTOR
