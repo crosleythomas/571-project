@@ -4,8 +4,8 @@ import random
 from tempfile import TemporaryFile
 
 create_mat_file = 1
-create_npz_file = 0
-add_dots = 1
+create_npz_file = 1
+add_dots = 0
 
 # This file generates a file 'video.mat' with two values:
 #	'alist' -> the image matrix, shaped (num_frames, width, height)
@@ -79,7 +79,7 @@ for i in range(1, num_frames):
 	actions.append(action_indices[choice])
 
 if create_mat_file:
-	sio.savemat("../sprites/sprites_baseline_data_dots.mat", {'frames' : frames, 'actions' : actions })
+	sio.savemat("../sprites/sprites_baseline_data.mat", {'frames' : frames, 'actions' : actions })
 
 if create_npz_file:
 	np.savez('../sprites/sprites_baseline_data.npz', frames=frames, actions=actions)

@@ -43,10 +43,12 @@ class Grid(object):
 			return self.PATH
 
 	# Converts the internal representation to an image
-	def convert_to_image(self):
+	def convert_to_image(self, show_whole_grid):
 		sprites = {}
 		sprite_size = self.SPRITE_SIZE
 		this_window = self.get_frame()
+		if show_whole_grid:
+			this_window = self.grid
 		side_length = this_window.shape[0] * sprite_size
 		image = np.zeros((side_length, side_length), dtype=np.float64)
 		for i in range(0, side_length, sprite_size):

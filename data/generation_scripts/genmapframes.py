@@ -9,8 +9,12 @@ from wall_grid import WallGrid
 from empty_grid import EmptyGrid
 from dot_grid import DotGrid
 
+from scipy.misc import toimage
+# See the environment with
+#	toimage(grid.convert_to_image(1)).show()
+
 create_mat_file = 1
-create_npz_file = 0
+create_npz_file = 1
 
 # This file generates a file 'video.mat' with two values:
 #	'alist' -> the image matrix, shaped (num_frames, width, height)
@@ -18,17 +22,19 @@ create_npz_file = 0
 # len(actions) = len(alist) - 1 because the actions go between frames
 
 random.seed(10)
-	
+
 sprite = sio.loadmat('../8x8_sprite.mat')['sprite']
 
 sprite_width = sprite.shape[0]
 sprite_height = sprite.shape[1]
 
 num_channels = 1
-window_size = 5
-grid_size = 5
+window_size = 15
+grid_size = 15
 side_length = sprite_width * window_size
 grid = WallGrid(window_size, grid_size) # can also be emptygrid
+# grid = EmptyGrid(window_size, grid_size)
+# grid = DotGrid(window_size, grid_size)
 
 num_frames = 10000
 frames = np.zeros((num_frames, num_channels, side_length, side_length), dtype=np.float64)
