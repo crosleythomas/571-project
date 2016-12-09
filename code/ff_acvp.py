@@ -21,7 +21,7 @@ import time, datetime
 # The only difference for the ff vs recurrent architectures is
 #	the use of an LSTM on the high-level encoded feature layer
 #	(right before the last dense layer before action transformation)
-action_conditional = 0
+action_conditional = 1
 recurrent = 0
 display_network_sizes = 1
 
@@ -161,12 +161,11 @@ dmodel.add(Deconvolution2D(num_output_channels, deconv_sizes[1][1], deconv_sizes
 print('Compiling model...\n')
 dmodel.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_squared_error'])
 
+# Let's see what we got
 dmodel.summary()
-plot(dmodel, to_file='../figures/ff_model.png')
+plot(dmodel, to_file='../figures/sequential_ff_model.png')
 
 print('Training...\n')
-
-# TODO: check if we need to disable shuffling for the recurrent model
 dmodel.fit(model_training_input, labels, verbose=1, nb_epoch=5, batch_size=1)
 print('Training completed...\n')
 

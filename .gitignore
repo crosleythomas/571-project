@@ -1,5 +1,7 @@
 data/trained_models
 data/sprites
 data/8x8_sprite.mat
-
+tests
+!tests/*.py
 *.pyc
+*.h5

@@ -21,7 +21,7 @@ import time, datetime
 # The only difference for the ff vs recurrent architectures is
 #	the use of an LSTM on the high-level encoded feature layer
 #	(right before the last dense layer before action transformation)
-action_conditional = 0
+action_conditional = 1
 recurrent = 0
 display_network_sizes = 1
 
@@ -97,9 +97,9 @@ final_conv_layer_index = 1
 # Dense layer sizes mirrored around the point-wise product between 
 # actions and high-level feature representation
 dense_output_sizes = [100, hidden_size]
-dedense_output_sizes = [dense_output_sizes[0], 400]
-deconv_input_size = (1, 20, 20)
-deconv_output_sizes = [(1, 20, 20), (1, 40, 40)]
+dedense_output_sizes = [dense_output_sizes[0], 4800]
+deconv_input_size = (3, 40, 40)
+deconv_output_sizes = [(None, 3, 40, 40), (None, 1, 40, 40)]
 
 # Frames Branch
 frames_input = Input(shape=(num_input_channels, input_height, input_width))
@@ -112,7 +112,6 @@ frames_input = Input(shape=(num_input_channels, input_height, input_width))
 # Convolution2D(num_filters, conv_width)
 conv1 = Convolution2D(conv_sizes[0][0], conv_sizes[0][1], conv_sizes[0][2], init='glorot_uniform', activation='relu', border_mode='same')(frames_input)
 conv2 = Convolution2D(conv_sizes[1][0], conv_sizes[1][1], conv_sizes[1][2], init='glorot_uniform', activation='relu', border_mode='same')(conv1)
-
 
 # Vectorize the output of the convolutional layers to be used in FC layers
 features_flatten = Flatten()(conv2)
@@ -132,7 +131,7 @@ if action_conditional:
 	# Action-feature mapping
 	action_projection = Dense(hidden_size, input_dim=action_size, init='glorot_uniform')(action_input)
 	# Point-wise multiplicative combination
-	encoded = merge([action_input, action_projection], mode='mul')
+	encoded = merge([features_d2, action_projection], mode='mul')
 else:
 	encoded = features_d2
 
@@ -143,31 +142,33 @@ else:
 # Fully-connected reshaping to form a 3D feature map
 dedense1 = Dense(dedense_output_sizes[0], init='glorot_uniform')(encoded)
 dedense2 = Dense(dedense_output_sizes[1], init='glorot_uniform', activation='relu')(dedense1)
-dedense2_reshape = Reshape(deconv_input_size)(dedense2)
+dedense2_reshaped = Reshape(deconv_input_size)(dedense2)
 
 # Add deconvolutional layer(s)
-deconv1 = Deconvolution2D(deconv_sizes[0][0], deconv_sizes[0][1], deconv_sizes[0][2], output_shape=(deconv_output_sizes[0]), border_mode='same')
-deconv2 = Deconvolution2D(num_output_channels, deconv_sizes[1][1], deconv_sizes[1][2], output_shape=(num_output_channels, input_height, input_width), border_mode='same')
+deconv1 = Deconvolution2D(deconv_sizes[0][0], deconv_sizes[0][1], deconv_sizes[0][2], output_shape=(deconv_output_sizes[0]), border_mode='same')(dedense2_reshaped)
+deconv2 = Deconvolution2D(num_output_channels, deconv_sizes[1][1], deconv_sizes[1][2], output_shape=(None, num_output_channels, input_height, input_width), border_mode='same')(deconv1)
 
 # Make the model
 if action_conditional:
-	model = Mode(input=[frames_input, action_input], output=deconv2)
+	model_training_input = [input_frames, actions]
+	model = Model(input=[frames_input, action_input], output=deconv2)
 else:
-	model = Mode(input=frames_input, output=deconv2)
+	model_training_input = input_frames
+	model = Model(input=frames_input, output=deconv2)
 
 ###########################################
 ### 		Step 4: Train! 				###
 ###########################################
 print('Compiling model...\n')
-dmodel.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_squared_error'])
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_squared_error'])
 
-dmodel.summary()
-plot(dmodel, to_file='../figures/ff_model.png')
+model.summary()
+plot(model, to_file='../figures/functional_ff_model.png')
 
 print('Training...\n')
 
 # TODO: check if we need to disable shuffling for the recurrent model
-dmodel.fit(model_training_input, labels, verbose=1, nb_epoch=5, batch_size=1)
+model.fit(model_training_input, labels, verbose=1, nb_epoch=5, batch_size=1)
 print('Training completed...\n')
 
 # Save the model in HD5 format
