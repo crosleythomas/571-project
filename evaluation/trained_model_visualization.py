@@ -19,7 +19,7 @@ SCALE_FACTOR = 255.0
 #model_file = '../data/trained_models/sprites_training_nac_ff_2016-11-20_19:57:03.h5'
 #action_conditional = 0
 # ac
-model_file = '../data/trained_models/sprites_training_ac_ff_2016-11-20_19:19:59.h5'
+model_file = 'sprites_training_ac_ff_2016-11-20_19:19:59.h5'
 action_conditional = 1
 
 model = load_model(model_file)
