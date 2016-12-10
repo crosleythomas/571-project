@@ -12,8 +12,8 @@
 ####################################################################
 
 # Keras Imports
-from keras.models import Sequential
-from keras.layers import Convolution2D, MaxPooling2D, Dense, Merge, Reshape, Flatten, Deconvolution2D, Input, LSTM
+from keras.models import *
+from keras.layers import *
 from keras.utils.visualize_util import plot
 from keras.models import model_from_yaml
 
@@ -21,14 +21,22 @@ from keras.models import model_from_yaml
 import scipy.io as sio
 import numpy as np
 import time, datetime
+import matplotlib
+import matplotlib.pyplot as plt
+plt.switch_backend('Qt4Agg')
+import matplotlib.image as mpimg
+from PIL import Image
 
-# Switch for using the feed-forward vs recurrent architecture
-# The only difference for the ff vs recurrent architectures is
-#	the use of an LSTM on the high-level encoded feature layer
-#	(right before the last dense layer before action transformation)
-action_conditional = 1
-recurrent = 0
-display_network_sizes = 1
+SCALE_FACTOR = 255.0
+np.set_printoptions(threshold=np.nan)
+
+#######################################
+### Load a model we want to examine ###
+#######################################
+model_file = '../data/trained_models/sprites_training_ac_ff_2016-12-08_20:07:06.h5'
+model = load_model(model_file)
+
+action_projection_layer_index = 7
 
 ###############################
 ###        Load data        ###
@@ -45,32 +53,11 @@ data_file = '../data/sprites/sprites_training.npz'
 data = np.load(data_file)
 input_frames = data['frames']
 labels = data['labels']
-
-# Save the trained model to a file
-ts = time.time()
-training_timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-
-arch_str = 'ff'
-if recurrent:
-	arch_str = 'rec'
-
-ac_str = 'nac'
-if action_conditional:
-	ac_str = 'ac'
-
-data_name = data_file.split('/')[-1].split('.')[0]
-model_output_file = '../data/trained_models/' + data_name + '_' + ac_str + '_' + arch_str + '_' + training_timestamp
-
-# Load action data
-#	There are N timesteps, t = 0 is the initial step, t = i is the system at time i
-#	range: actions[0]...actions[N-1], timesteps from [0...N-1]
-#	actions[t] is a one-hot binary vector of actions
-#	size(actions) = [timesteps, num_actions]
 actions = data['actions']
 
-#####################################
-### Setup arguments based on data ###
-#####################################
+#########################################
+###	  Setup arguments based on data   ###
+#########################################
 action_size = 1
 num_frames = input_frames.shape[0]
 num_input_channels = input_frames.shape[1]
@@ -81,113 +68,88 @@ num_input_frames = 3
 input_size = num_input_frames * num_input_channels * input_height * input_width
 hidden_size = 100
 
-###################################################
-### 				Build Model 				###
-###################################################
-
-####################################################
-### 			Layer sizes 					 ###
-### The convolutional and deconvolutional layer  ###
-### sizes are mirrored around the merge with actions
-####################################################
-# conv_sizes[i][0] = num_filters in ith layer
-# convsizes[i][0] = filter height in ith layer
-# conv_sizes[i][0] = filter width in ith layer
-print('Building model...\n')
-conv_sizes = [[3,3,3],[3,3,3]]
-deconv_sizes = conv_sizes[:]
-deconv_sizes.reverse()
-final_conv_layer_index = 1
-
-# Dense layer sizes mirrored around the point-wise product between 
-# actions and high-level feature representation
-dense_output_sizes = [100, hidden_size]
-
-# Frames Branch
-fmodel = Sequential()
-
-###############################################
-### 			Step 1: Encoding 			###
-###############################################
-
-# Add convolutional layer(s)
-# Convolution2D(num_filters, conv_width)
-fmodel.add(Convolution2D(conv_sizes[0][0], conv_sizes[0][1], conv_sizes[0][2], init='glorot_uniform', activation='relu', border_mode='same', input_shape=(num_input_channels, input_height, input_width)))
-fmodel.add(Convolution2D(conv_sizes[1][0], conv_sizes[1][1], conv_sizes[1][2], init='glorot_uniform', activation='relu', border_mode='same'))
-
-dedense_output_sizes = [dense_output_sizes[0], np.prod(fmodel.layers[-1].output_shape[1:])]
-
-# Vectorize the output of the convolutional layers to be used in FC layers
-fmodel.add(Flatten())
-
-# Add fully-connected layer(s) WITH non-linearity
-fmodel.add(Dense(dense_output_sizes[0], activation='relu'))
-
-# Add fully-connected layer(s) WITHOUT non-linearity
-fmodel.add(Dense(dense_output_sizes[1], init='glorot_uniform'))
-
-###########################################
-### 	Step 2: Action transformation 	###
-###########################################
-if action_conditional:
-	# Action Branch
-	amodel = Sequential()
-	# Action multiplication
-	amodel.add(Dense(hidden_size, input_dim=action_size, init='glorot_uniform'))
-	# Point-wise multiplicative combination
-	encoded = Merge([fmodel, amodel], mode='mul')
-	dmodel = Sequential()
-	dmodel.add(encoded)
-	model_training_input = [input_frames, actions]
-else:
-	# Input to deconvolutional branch is just the encoded state vector
-	dmodel = Sequential()
-	dmodel.add(fmodel)
-	model_training_input = input_frames
-
-###########################################
-### 		Step 3: Deconvolution 		###
-###########################################
-
-# Fully-connected reshaping to form a 3D feature map
-dmodel.add(Dense(dedense_output_sizes[0], init='glorot_uniform'))
-dmodel.add(Dense(dedense_output_sizes[1], init='glorot_uniform', activation='relu'))
-dmodel.add(Reshape(fmodel.layers[final_conv_layer_index].output_shape[1:]))
-
-# Add deconvolutional layer(s)
-dmodel.add(Deconvolution2D(deconv_sizes[0][0], deconv_sizes[0][1], deconv_sizes[0][2], output_shape=(fmodel.layers[final_conv_layer_index].input_shape), border_mode='same'))
-dmodel.add(Deconvolution2D(num_output_channels, deconv_sizes[1][1], deconv_sizes[1][2], output_shape=(fmodel.layers[final_conv_layer_index-1].input_shape), border_mode='same'))
-
-###########################################
-### 		Step 4: Train! 				###
-###########################################
-print('Compiling model...\n')
-dmodel.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_squared_error'])
-
-print('Training...\n')
-
-# TODO: check if we need to disable shuffling for the recurrent model
-dmodel.fit(model_training_input, labels, verbose=1, nb_epoch=5, batch_size=1)
-print('Training completed...\n')
-
-### Should be able to load any model and then start from here but for some ###
-# reason load_model isn't working on our graph-model style network - does work
-# on non-action-conditional networks since they are just plain feedforward one-
-# input one-output.
-
 # Replace the dense weights (and bias vector) that take you from the action 
 # 	vector to the vector that you point-wise prod with the encoded feature
 #	vector.  Let's do this by setting all weights to 0 and a bias of 1 so 
 #	we don't have to think about what we input with the actions.
 
+# model will be the original action-conditiona model (with transformations)
+# non-action-conditional model (without transformations)
+print('Copying over model and re-setting weights in nac mode...')
+nac_model = model_from_yaml(model.to_yaml())
+
 zero_weights = np.zeros((action_size, hidden_size))
 one_biases = np.ones((hidden_size,))
-orig_weights = amodel.layers[0].get_weights()
+orig_weights = model.layers[action_projection_layer_index].get_weights()
 orig_weights[0] = zero_weights
 orig_weights[1] = one_biases
-amodel.layers[0].set_weights(orig_weights)
+nac_model.layers[action_projection_layer_index].set_weights(orig_weights)
 
 # Now display visualization
 #	- true image
 #	- action conditioned image
 #	- non-transformed image
+
+# Set up image display
+plt.ion()
+fig = plt.figure()
+nac_handle = fig.add_subplot(1,3,1)
+nac_handle.set_title('Non-action-conditional Image')
+pred_handle = fig.add_subplot(1,3,2)
+pred_handle.set_title('Action-conditional Image')
+true_handle = fig.add_subplot(1,3,3)
+true_handle.set_title('True Image')
+
+display_iters = 1000
+
+print('Displaying...')
+for i in range(0, display_iters):
+	# Input
+	frame_input = input_frames[i,:,:,:]
+	frame_input = np.reshape(frame_input, [1, num_input_channels, input_height, input_width])
+	action_input = actions[i]
+	action_input = np.reshape(actions[i], [1, action_size])
+
+	# Non-action-conditioned predicted image
+	prediction_input = [frame_input, action_input]		
+	nac_predicted_frame = nac_model.predict(prediction_input)
+	nac_predicted_frame = np.reshape(nac_predicted_frame, [input_height, input_width])
+	nac_predicted_frame = nac_predicted_frame * SCALE_FACTOR * 100
+	print(str(nac_predicted_frame))
+	print()
+
+	# Action-Conditioned Predicted  Image
+	prediction_input = [frame_input, action_input]		
+	ac_predicted_frame = model.predict(prediction_input)
+	ac_predicted_frame = np.reshape(ac_predicted_frame, [input_height, input_width])
+	ac_predicted_frame = ac_predicted_frame * SCALE_FACTOR
+	print(str(ac_predicted_frame))
+	print()
+
+	# Compare to true image
+	true_frame = labels[i,:,:,:]
+	true_frame = np.reshape(true_frame, [input_height, input_width])
+	true_frame = true_frame * SCALE_FACTOR
+	print(str(true_frame))
+	print()
+
+	# Display
+	nac_handle = fig.add_subplot(1,3,1)
+	pred_handle = fig.add_subplot(1,3,2)
+	true_handle = fig.add_subplot(1,3,3)
+
+	if i == 0:
+		nhandle = nac_handle.imshow(nac_predicted_frame)
+		phandle = pred_handle.imshow(ac_predicted_frame)
+		thandle = true_handle.imshow(true_frame)
+	else:
+		nhandle.set_data(nac_predicted_frame)
+		phandle.set_data(ac_predicted_frame)
+		thandle.set_data(true_frame)
+
+	fig.show()
+	ans = raw_input("Press [enter] to continue, type anything to exit.")
+	if len(ans) > 0:
+		sys.exit(0)
+
+

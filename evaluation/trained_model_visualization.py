@@ -19,12 +19,15 @@ SCALE_FACTOR = 255.0
 #model_file = '../data/trained_models/sprites_training_nac_ff_2016-11-20_19:57:03.h5'
 #action_conditional = 0
 # ac
-model_file = 'sprites_training_ac_ff_2016-11-20_19:19:59.h5'
+#model_file = '../data/trained_models/sprites_training_ac_ff_2016-11-20_18:33:34.h5'
+model_file = '../data/trained_models/single_input_sprites_dots_training_ac_ff_2016-12-10_15:12:10.h5'
+model_file = sys.argv[1] if len(sys.argv) > 1 else model_file
 action_conditional = 1
 
 model = load_model(model_file)
 
-data_file = '../data/sprites/sprites_training.npz'
+data_file = '../data/sprites/single_input_sprites_dots_training.npz'
+data_file = sys.argv[2] if len(sys.argv) > 2 else data_file
 data = np.load(data_file)
 inputs = data['frames']
 labels = data['labels']

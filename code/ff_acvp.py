@@ -35,7 +35,7 @@ class ffnn():
 		#	input_size = frames * height * width * channels
 		#	size(frames) = [input_size, input_size]
 		print('Loading data...\n')
-		data_file = '../data/sprites/sprites_training.npz'
+		data_file = '../data/sprites/single_input_sprites_training.npz'
 		data = np.load(data_file)
 		input_frames = data['frames']
 		labels = data['labels']

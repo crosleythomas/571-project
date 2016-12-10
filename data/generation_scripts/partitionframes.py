@@ -9,11 +9,11 @@ import random
 #	'labels' -> the labels, shaped (num_samples, width, height)
 # in this case, len(actions) = len(actions)
 
-create_mat_file = 1
+create_mat_file = 0
 create_npz_file = 1
 
-baseline_file = '../sprites/sprites_baseline_data.npz'
-output_file = '../sprites/sprites_training'
+baseline_file = '../sprites/sprites_baseline_data_dots.npz'
+output_file = '../sprites/single_input_sprites_dots_training'
 
 data = np.load(baseline_file)
 video = data['frames']
@@ -24,7 +24,7 @@ num_channels = video.shape[1]
 frame_height = video.shape[2]
 frame_width = video.shape[3]
 
-frames_per_input = 3
+frames_per_input = 1
 total_channels = frames_per_input * num_channels
 
 samples = num_frames - frames_per_input

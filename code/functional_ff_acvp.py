@@ -13,6 +13,7 @@ from keras.layers import *
 from keras.utils.visualize_util import plot
 
 # Other Imports
+import sys
 import scipy.io as sio
 import numpy as np
 import time, datetime
@@ -24,6 +25,7 @@ import time, datetime
 action_conditional = 1
 recurrent = 0
 display_network_sizes = 1
+save_model = 1
 
 ###############################
 ###        Load data        ###
@@ -36,7 +38,9 @@ display_network_sizes = 1
 #	input_size = frames * height * width * channels
 #	size(frames) = [input_size, input_size]
 print('Loading data...\n')
-data_file = '../data/sprites/sprites_training.npz'
+data_file = '../data/sprites/single_input_sprites_training.npz'
+data_file = sys.argv[1] if len(sys.argv) > 1 else data_file
+
 data = np.load(data_file)
 input_frames = data['frames']
 labels = data['labels']
@@ -74,7 +78,7 @@ input_height = input_frames.shape[2]
 input_width = input_frames.shape[3]
 num_input_frames = 3
 input_size = num_input_frames * num_input_channels * input_height * input_width
-hidden_size = 100
+hidden_size = 10
 
 ###################################################
 ### 				Build Model 				###
@@ -92,7 +96,6 @@ print('Building model...\n')
 conv_sizes = [[3,3,3],[3,3,3]]
 deconv_sizes = conv_sizes[:]
 deconv_sizes.reverse()
-final_conv_layer_index = 1
 
 # Dense layer sizes mirrored around the point-wise product between 
 # actions and high-level feature representation
@@ -168,8 +171,10 @@ plot(model, to_file='../figures/functional_ff_model.png')
 print('Training...\n')
 
 # TODO: check if we need to disable shuffling for the recurrent model
-model.fit(model_training_input, labels, verbose=1, nb_epoch=5, batch_size=1)
+model.fit(model_training_input, labels, verbose=1, nb_epoch=10, batch_size=1, validation_split=0.3)
 print('Training completed...\n')
 
 # Save the model in HD5 format
-dmodel.save(model_output_file + '.h5')
+if save_model:
+	print('Find saved model at: ' + model_output_file + '.h5')
+	model.save(model_output_file + '.h5')

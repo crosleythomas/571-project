@@ -21,3 +21,13 @@ Basic outline of the feed-forward architecture from the ACVP paper
 
 # Tutorial on custom activation function
 https://www.youtube.com/watch?v=56EuHj2V8K8
+
+# Training history in keras
+http://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
+
+# DQN in Keras example
+https://github.com/sherjilozair/dqn/blob/master/example.py
+https://github.com/sherjilozair/dqn/blob/master/dqn.py
+
+# Keras resources
+https://github.com/fchollet/keras-resources

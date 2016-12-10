@@ -13,7 +13,7 @@ add_dots = 0
 # len(actions) = len(alist) - 1 because the actions go between frames
 
 random.seed(10)
-	
+
 sprite = sio.loadmat('../8x8_sprite.mat')['sprite']
 
 sprite_width = sprite.shape[0]
