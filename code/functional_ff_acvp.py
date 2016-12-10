@@ -38,7 +38,8 @@ save_model = 1
 #	input_size = frames * height * width * channels
 #	size(frames) = [input_size, input_size]
 print('Loading data...\n')
-data_file = '../data/sprites/single_input_sprites_training.npz'
+
+data_file = '../data/sprites/sprites_walled_training.npz'
 data_file = sys.argv[1] if len(sys.argv) > 1 else data_file
 
 data = np.load(data_file)
@@ -97,12 +98,14 @@ conv_sizes = [[3,3,3],[3,3,3]]
 deconv_sizes = conv_sizes[:]
 deconv_sizes.reverse()
 
+pixels = 40 
+
 # Dense layer sizes mirrored around the point-wise product between 
 # actions and high-level feature representation
 dense_output_sizes = [100, hidden_size]
 dedense_output_sizes = [dense_output_sizes[0], 4800]
-deconv_input_size = (3, 40, 40)
-deconv_output_sizes = [(None, 3, 40, 40), (None, 1, 40, 40)]
+deconv_input_size = (3, pixels, pixels)
+deconv_output_sizes = [(-1, 3, pixels, pixels), (None, 1, pixels, pixels)]
 
 # Frames Branch
 frames_input = Input(shape=(num_input_channels, input_height, input_width))

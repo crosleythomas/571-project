@@ -23,6 +23,9 @@ class Grid(object):
 		self.grid[self.pos] = self.SPRITE
 		self.boundaries = []
 	
+	def get_shape(self):
+		return (self.grid.shape)
+
 	# returns whether the given position is inside the grid
 	def in_bounds(self, pos):
 		return not (pos[0] < 0 or pos[0] >= self.grid.shape[0] or 

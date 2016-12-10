@@ -29,16 +29,20 @@ sprite_width = sprite.shape[0]
 sprite_height = sprite.shape[1]
 
 num_channels = 1
-window_size = 15
-grid_size = 15
-side_length = sprite_width * window_size
+window_size = -1
+grid_size = 3
+
 grid = WallGrid(window_size, grid_size) # can also be emptygrid
 # grid = EmptyGrid(window_size, grid_size)
 # grid = DotGrid(window_size, grid_size)
+shape = grid.get_shape()
+side_length = shape[0] * sprite_height
 
-num_frames = 10000
+toimage(grid.convert_to_image(1)).show()
+
+num_frames = 1000
 frames = np.zeros((num_frames, num_channels, side_length, side_length), dtype=np.float64)
-frames[0, :, :, :] = grid.convert_to_image()
+frames[0, :, :, :] = grid.convert_to_image(1)
 
 possible_actions = ['u', 'l', 'd', 'r', 'n']
 action_indices = {'u' : 0, 'l' : 1, 'd' : 2, 'r': 3, 'n' : 4}
@@ -50,11 +54,12 @@ actions = []
 for i in range(1, num_frames):
 	choice = random.choice(possible_actions)
 	grid.take_action(choice)
-	frames[i, :, :, :] = grid.convert_to_image()
+	frames[i, :, :, :] = grid.convert_to_image(1)
+	
 	actions.append(action_indices[choice])
 
 if create_mat_file:
-	sio.savemat("../sprites/sprites_baseline_data_dots.mat", {'frames' : frames, 'actions' : actions })
+	sio.savemat("../sprites/sprites_walled_baseline.mat", {'frames' : frames, 'actions' : actions })
 
 if create_npz_file:
-	np.savez('../sprites/sprites_baseline_data.npz', frames=frames, actions=actions)
+	np.savez('../sprites/sprites_walled_baseline.npz', frames=frames, actions=actions)

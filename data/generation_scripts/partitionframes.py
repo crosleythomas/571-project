@@ -12,8 +12,9 @@ import random
 create_mat_file = 0
 create_npz_file = 1
 
-baseline_file = '../sprites/sprites_baseline_data_dots.npz'
-output_file = '../sprites/single_input_sprites_dots_training'
+
+baseline_file = '../sprites/sprites_walled_baseline.npz'
+output_file = '../sprites/sprites_walled_training'
 
 data = np.load(baseline_file)
 video = data['frames']
