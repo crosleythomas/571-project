@@ -15,11 +15,12 @@ class WallGrid(EmptyGrid):
 		self.grid[self.pos] = self.SPRITE
 		if window_size > 0:
 			self.grid = np.lib.pad(self.grid, window_size / 2, self.pad_values)
+			self.pos = (self.pos[0] + window_size / 2, self.pos[1] + window_size / 2)
 		else:
 			self.grid = np.lib.pad(self.grid, 1, self.pad_values)
+			self.pos = (self.pos[0] + 1, self.pos[1] + 1)
 		self.window_start = (self.window_start[0] + window_size / 2, self.window_start[1] + window_size / 2)
-		self.pos = (self.pos[0] + window_size / 2, self.pos[1] + window_size / 2)
-
+		
 
 	def explore(self, current_pos, visited):
 		if not self.in_bounds(current_pos):

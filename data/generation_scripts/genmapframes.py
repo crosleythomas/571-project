@@ -29,7 +29,7 @@ sprite_width = sprite.shape[0]
 sprite_height = sprite.shape[1]
 
 num_channels = 1
-window_size = -1
+window_size = 0
 grid_size = 3
 
 grid = WallGrid(window_size, grid_size) # can also be emptygrid
