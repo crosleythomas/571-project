@@ -1,7 +1,7 @@
 import scipy.io as sio
 import numpy as np
 import random
-
+import sys
 # This file splits up baseline data file into input & label sets
 # We output 'training.mat' with the following variables
 #	'input' -> the training dataset, shaped (num_samples, frames_per_input * num_channels, width, height)
