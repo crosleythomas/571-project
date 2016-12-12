@@ -9,12 +9,11 @@ import scipy.io as sio
 #	the internal representation
 
 class Grid(object):
-	SPRITE_SIZE = 8
-
 	# All grids have a sprite and a path
 	SPRITE = 1
 	PATH = 0
 	def __init__(self, window_size, map_size):
+		self.SPRITE_SIZE = 8
 		self.window_size = window_size
 		self.map_size = map_size
 		self.grid = np.zeros((map_size, map_size), dtype=np.float64)
@@ -25,6 +24,9 @@ class Grid(object):
 	
 	def get_shape(self):
 		return (self.grid.shape)
+
+	def get_abs_pos(self):
+		return self.pos
 
 	# returns whether the given position is inside the grid
 	def in_bounds(self, pos):
@@ -45,10 +47,13 @@ class Grid(object):
 		elif number == self.PATH:
 			return self.PATH
 
+	def get_sprite_size(self):
+		return self.SPRITE_SIZE
+
 	# Converts the internal representation to an image
 	def convert_to_image(self, show_whole_grid):
 		sprites = {}
-		sprite_size = self.SPRITE_SIZE
+		sprite_size = self.get_sprite_size()
 		this_window = self.get_frame()
 		if show_whole_grid:
 			this_window = self.grid
@@ -56,7 +61,9 @@ class Grid(object):
 		image = np.zeros((side_length, side_length), dtype=np.float64)
 		for i in range(0, side_length, sprite_size):
 			for j in range(0, side_length, sprite_size):
+
 				value = this_window[(i / sprite_size, j / sprite_size)]
+				
 				if value not in sprites:
 					sprites[value] = self.get_sprite(value)
 				image[i:i+sprite_size, j:j+sprite_size] = sprites[value]
