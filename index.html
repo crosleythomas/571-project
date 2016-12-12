@@ -82,6 +82,14 @@ Adjust the architecture of the network/algorithm to address issues that arise fo
 <li>
 <b>Artifact: New datasets with the agent centered in all frames.  A map of the environment from consecutive predictions.</b>
 </li>
+  <li>
+<b>Results: (November 28th)</b>
+<ul>
+  <li>We generated datasets with smaller windows as the agent moved through a larger map, but changed directions.</li>
+  <li>Code written to extend dataset-type - can generate grids of arbitrary size / walls / dots, although these inputs are much tougher to train on (size, etc))</li>
+  <li>Progress made on informed exploration - agent uses the network to inform movement towards states different from its history.</li>
+</ul>
+</li>
 </ul>
 
 <h3>
@@ -96,6 +104,7 @@ Try adding to the architecture to address problems that arose with the more comp
 <li>
 <b>Artifact: an implementation of one more complex architecture - a recurrent network, a stochastic network, etc.  The advanced approach we choose to implement will be based on the short-comings we see from training on the more complex datasets.</b>
 </li>
+  
 </ul>
 
 <h3>
