@@ -30,7 +30,7 @@
 We are working on action-conditional video prediction as described in the 2015 paper by Oh, et al. <a href='https://arxiv.org/pdf/1507.08750v2.pdf'>Action-Conditional Video Prediction using Deep Networks in Atari Games</a>.  The goal for the project is to implement the baseline algorithm on simple datasets, and then scale up the complexity of the data and make adjustments to the algorithm accordingly.
 </p>
 
-<h3>
+<h2>
 <a id="artifacts" class="anchor" href="#artifacts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Artifacts</h3>
 
 <p>
@@ -95,7 +95,7 @@ Adjust the architecture of the network/algorithm to address issues that arise fo
   <li>
 <b>Results: (November 28th)</b>
 <ul>
-  <li>We generated datasets with smaller windows as the agent moved through a larger map, but changed directions.</li>
+  <li>We generated datasets with smaller windows as the agent moved through a larger map, but preliminary results were tough to interpret. We changed directions.</li>
   <li>Code written to extend dataset-type - can generate grids of arbitrary size / walls / dots, although these inputs are much tougher to train on (size, etc))</li>
   <li>Progress made on informed exploration - agent uses the network to inform movement towards states different from its history.</li>
 </ul>
@@ -114,7 +114,16 @@ Try adding to the architecture to address problems that arose with the more comp
 <li>
 <b>Artifact: an implementation of one more complex architecture - a recurrent network, a stochastic network, etc.  The advanced approach we choose to implement will be based on the short-comings we see from training on the more complex datasets.</b>
 </li>
-  
+<li>
+<b>Results: (December 12th)</b>
+<ul>
+  <li>We present an informed exploration strategy using the network to move towards new states.</li>
+  <li>We simulate a noisy sensor model and evaluate our network on these frames. We create a recurrent model that performs better at this task.</li>
+  <li>We examine the effect of the hidden encoded vector size on training loss.</li>
+  <li>We investigate action-transformations, particularly when the input action is all 1s to view the state of the encoded vector.</li>
+  <li>We present findings in class and in our paper. (Links at top of site).</li>
+</ul>
+</li> 
 </ul>
 
 <h3>
